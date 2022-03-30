@@ -4,6 +4,7 @@ require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
 const app = express();
 const port = process.env.PORT;
+const matcher = require("./matcher");
 
 const scopes = [
   "ugc-image-upload",
@@ -36,10 +37,12 @@ const spotifyApi = new SpotifyWebApi({
 app.use(express.json());
 
 app.post("/", async (req, res) => {
-  let status = await spotifyCommand(req.body.plainTextContent).catch((error) =>
-    res.send(error)
-  );
-  res.send(status);
+  try {
+    const result = await spotifyCommand(req.body.plainTextContent);
+    res.send(result);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 app.get("/", (req, res) => {
@@ -103,18 +106,53 @@ app.get("/callback", (req, res) => {
 
 const spotifyCommand = async (command) => {
   console.log(`⚡\t${command}`);
-  if (/^queue/g.test(command)) {
-    const {
-      groups: { song },
-    } = /queue (?<song>.*$)/g.exec(command);
-    let songs = await spotifyApi
-      .searchTracks(song)
-      .catch((error) =>
-        Promise.reject(
-          `${error?.body?.error?.message ? error.body.error.message : error} 😭`
-        )
+
+  const data = await matcher(command);
+  switch (data.intent) {
+    case "help":
+      return Promise.resolve(
+        `
+    <h1>Spotify Commands</h1>
+    <a href="https://spotifyrvb.herokuapp.com/login">Login</a><br/>
+    <a href="https://spotifyrvb.herokuapp.com/logout">Logout</a><br/>
+    <p>Commands:<p>
+    <ul>
+      <li>queue <song> - Queues a song</li>
+      <li>current - Shows the current song playing</li>
+    </ul>`
       );
-    if (songs) {
+
+      break;
+
+    case "current":
+      try {
+        const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
+        return Promise.resolve(
+          `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
+        );
+      } catch (error) {
+        return Promise.reject(
+          `${error?.body?.error?.message ? error.body.error.message : error} 😭`
+        );
+      }
+      break;
+
+    case "queue":
+      if (data.entities.groups.Song?.trim() === "") {
+        return Promise.reject(`No song title provided 🤬☠💣`);
+      }
+      let songs = await spotifyApi
+        .searchTracks(data.entities.groups.Song.trim())
+        .catch((error) =>
+          Promise.reject(
+            `${
+              error?.body?.error?.message ? error.body.error.message : error
+            } 😭`
+          )
+        );
+      if (songs.body.tracks.items.length === 0) {
+        return Promise.reject(`Song not found 😭`);
+      }
       try {
         await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
         return Promise.resolve(
@@ -125,37 +163,12 @@ const spotifyCommand = async (command) => {
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
         );
       }
-    }
-    return Promise.reject(`Song not found 😭`);
-  }
 
-  if (/^current/g.test(command)) {
-    try {
-      const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
-      return Promise.resolve(
-        `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
-      );
-    } catch (error) {
-      return Promise.reject(
-        `${error?.body?.error?.message ? error.body.error.message : error} 😭`
-      );
-    }
+      break;
+    default:
+      return Promise.resolve(`command not Found "${command}" 🤬`);
+      break;
   }
-  if (/^help/g.test(command)) {
-    return Promise.resolve(
-      `
-      <h1>Spotify Commands</h1>
-      <a href="https://spotifyrvb.herokuapp.com/login">Login</a><br/>
-      <a href="https://spotifyrvb.herokuapp.com/logout">Logout</a><br/>
-      <p>Commands:<p>
-      <ul>
-        <li>queue <song> - Queues a song</li>
-        <li>current - Shows the current song playing</li>
-      </ul>`
-    );
-  }
-
-  return Promise.resolve(`command not Found "${command}" 🤬`);
 };
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
