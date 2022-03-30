@@ -97,6 +97,7 @@ const spotifyCommand = async (command) => {
   const {
     groups: { song },
   } = /queue (?<song>.*$)/g.exec(command);
+
   if (song) {
     let songs = await spotifyApi
       .searchTracks(song)
@@ -106,10 +107,30 @@ const spotifyCommand = async (command) => {
         .addToQueue(songs.body.tracks.items[0].uri)
         .catch((error) => console.log(error));
       return Promise.resolve(
-        `🎶 ${songs.body.tracks.items[0].name} : ${songs.body.tracks.items[0].artists[0].name}`
+        `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
       );
     }
   }
+
+  const current = /current/g.exec(command);
+  if (current) {
+    const currentSong = await spotifyApi
+      .getMyCurrentPlayingTrack()
+      .catch((error) => console.log(error));
+    return Promise.resolve(
+      `Now playing: ${currentSong.body.item.name} - ${songs.body.tracks.item.artist} 🎵`
+    );
+  }
+
+  const help = /help/g.exec(command);
+  if (help) {
+    return Promise.resolve(
+      `Commands:
+        -   queue <song> - Queues a song
+        -   current - Shows the current song playing`
+    );
+  }
+
   return Promise.resolve(`😪 not Found`);
 };
 app.listen(port, () => {
