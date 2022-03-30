@@ -50,6 +50,7 @@ app.get("/", (req, res) => {
 app.get("/logout", (req, res) => {
   spotifyApi.setAccessToken("");
   spotifyApi.setRefreshToken("");
+  res.send("Logged out");
 });
 
 app.get("/login", (req, res) => {
@@ -135,7 +136,8 @@ const spotifyCommand = async (command) => {
   if (/^help/g.test(command)) {
     return Promise.resolve(
       `
-      Login: https://spotifyrvb.herokuapp.com/login\n
+      <p>Logout: https://spotifyrvb.herokuapp.com/logout</p><br/>
+      <p>Login: https://spotifyrvb.herokuapp.com/login</p><br/>
       Commands:\n
         -   queue <song> - Queues a song\n
         -   current - Shows the current song playing\n`
