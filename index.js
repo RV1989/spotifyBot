@@ -105,7 +105,9 @@ const spotifyCommand = async (command) => {
       await spotifyApi
         .addToQueue(songs.body.tracks.items[0].uri)
         .catch((error) => console.log(error));
-      return Promise.resolve(`🎶 ${songs.body.tracks.items[0].name}`);
+      return Promise.resolve(
+        `🎶 ${songs.body.tracks.items[0].name} : ${songs.body.tracks.items[0].artists[0].name}`
+      );
     }
   }
   return Promise.resolve(`😪 not Found`);
