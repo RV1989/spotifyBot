@@ -35,10 +35,10 @@ const spotifyApi = new SpotifyWebApi({
 
 app.use(express.json());
 
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
   console.log(req.body);
-  spotifyCommand(req.body.plainTextContent);
-  res.send("Hello World!");
+  let status = await spotifyCommand(req.body.plainTextContent);
+  res.send(status);
 });
 
 app.get("/", (req, res) => {
@@ -101,8 +101,10 @@ const spotifyCommand = async (command) => {
     let songs = await spotifyApi.searchTracks(song);
     if (songs) {
       await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
+      return Promise.resolve(`🎶 ${songs.body.tracks.itmes[0].name}`);
     }
   }
+  return Promise.resolve(`😪 not Found`);
 };
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
