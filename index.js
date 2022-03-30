@@ -117,7 +117,7 @@ const spotifyCommand = async (command) => {
       .getMyCurrentPlayingTrack()
       .catch((error) => console.log(error));
     return Promise.resolve(
-      `Now playing: ${currentSong.body.item.name} - ${songs.body.tracks.item.artist} 🎵`
+      `Now playing: ${currentSong.body.item.name} - ${currentSong.body.tracks.item.artist} 🎵`
     );
   }
   if (/^help/g.test(command)) {
