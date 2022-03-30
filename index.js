@@ -136,12 +136,13 @@ const spotifyCommand = async (command) => {
   if (/^help/g.test(command)) {
     return Promise.resolve(
       `
+      <h1>Spotify Commands</h1>
       <a href="https://spotifyrvb.herokuapp.com/login">Login</a><br/>
       <a href="https://spotifyrvb.herokuapp.com/logout">Logout</a><br/>
       <p>Commands:<p>
       <ul>
-        <li>queue <song> - Queues a song<li>
-        <li>current - Shows the current song playing<li>
+        <li>queue <song> - Queues a song</li>
+        <li>current - Shows the current song playing</li>
       </ul>`
     );
   }
