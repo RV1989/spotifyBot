@@ -6,7 +6,7 @@ const port = process.env.PORT
 
 
 
-
+app.use(express.json());
 
     app.post('/', (req, res) => {
         console.log(req.body)
