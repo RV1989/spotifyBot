@@ -109,7 +109,11 @@ const spotifyCommand = async (command) => {
     } = /queue (?<song>.*$)/g.exec(command);
     let songs = await spotifyApi
       .searchTracks(song)
-      .catch((error) => Promise.reject(error));
+      .catch((error) =>
+        Promise.reject(
+          `${error?.body?.error?.message ? error.body.error.message : error} 😭`
+        )
+      );
     if (songs) {
       try {
         await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
@@ -117,10 +121,12 @@ const spotifyCommand = async (command) => {
           `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
         );
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(
+          `${error?.body?.error?.message ? error.body.error.message : error} 😭`
+        );
       }
     }
-    return Promise.resolve(`Song not found 😭`);
+    return Promise.reject(`Song not found 😭`);
   }
 
   if (/^current/g.test(command)) {
@@ -130,7 +136,9 @@ const spotifyCommand = async (command) => {
         `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
       );
     } catch (error) {
-      return Promise.resolve(error);
+      return Promise.reject(
+        `${error?.body?.error?.message ? error.body.error.message : error} 😭`
+      );
     }
   }
   if (/^help/g.test(command)) {
