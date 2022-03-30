@@ -36,7 +36,6 @@ const spotifyApi = new SpotifyWebApi({
 app.use(express.json());
 
 app.post("/", async (req, res) => {
-  console.log(req.body);
   let status = await spotifyCommand(req.body.plainTextContent);
   res.send(status);
 });
@@ -94,6 +93,7 @@ app.get("/callback", (req, res) => {
 });
 
 const spotifyCommand = async (command) => {
+  console.log(`⚡\t${command}`);
   const {
     groups: { song },
   } = /queue (?<song>.*$)/g.exec(command);
@@ -110,6 +110,7 @@ const spotifyCommand = async (command) => {
         `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
       );
     }
+    return Promise.resolve(`Song not found 😭`);
   }
 
   const current = /current/g.exec(command);
@@ -131,7 +132,7 @@ const spotifyCommand = async (command) => {
     );
   }
 
-  return Promise.resolve(`😪 not Found`);
+  return Promise.resolve(`command not Found "${command}" 🤬`);
 };
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
