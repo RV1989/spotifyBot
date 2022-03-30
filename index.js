@@ -28,7 +28,7 @@ const scopes = [
 ];
 
 const spotifyApi = new SpotifyWebApi({
-  redirectUri: `https://spotifyrvb.herokuapp.com//callback`,
+  redirectUri: `https://spotifyrvb.herokuapp.com/callback`,
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
