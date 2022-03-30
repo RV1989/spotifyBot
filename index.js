@@ -98,9 +98,13 @@ const spotifyCommand = async (command) => {
     groups: { song },
   } = /queue (?<song>.*$)/g.exec(command);
   if (song) {
-    let songs = await spotifyApi.searchTracks(song);
+    let songs = await spotifyApi
+      .searchTracks(song)
+      .catch((error) => console.log(error));
     if (songs) {
-      await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
+      await spotifyApi
+        .addToQueue(songs.body.tracks.items[0].uri)
+        .catch((error) => console.log(error));
       return Promise.resolve(`🎶 ${songs.body.tracks.itmes[0].name}`);
     }
   }
