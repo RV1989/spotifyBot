@@ -37,7 +37,7 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   let status = await spotifyCommand(req.body.plainTextContent).catch((error) =>
-    console.log(error)
+    res.send(error)
   );
   res.send(status);
 });
