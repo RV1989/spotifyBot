@@ -122,9 +122,9 @@ const spotifyCommand = async (command) => {
   }
   if (/^help/g.test(command)) {
     return Promise.resolve(
-      `Commands:
-        -   queue <song> - Queues a song
-        -   current - Shows the current song playing`
+      `Commands:\n
+        \t-   queue <song> - Queues a song\n
+        \t-   current - Shows the current song playing\n`
     );
   }
 
