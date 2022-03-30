@@ -44,6 +44,12 @@ app.post("/", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+  spotifyApi.setAccessToken("");
+});
+
+app.get("/logout", (req, res) => {
+  spotifyApi.setAccessToken("");
+  spotifyApi.setRefreshToken("");
 });
 
 app.get("/login", (req, res) => {
