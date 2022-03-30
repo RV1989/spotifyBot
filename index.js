@@ -94,11 +94,10 @@ app.get("/callback", (req, res) => {
 
 const spotifyCommand = async (command) => {
   console.log(`⚡\t${command}`);
-  const {
-    groups: { song },
-  } = /queue (?<song>.*$)/g.exec(command);
-
-  if (song) {
+  if (/^queue/g.test(command)) {
+    const {
+      groups: { song },
+    } = /queue (?<song>.*$)/g.exec(command);
     let songs = await spotifyApi
       .searchTracks(song)
       .catch((error) => console.log(error));
@@ -113,8 +112,7 @@ const spotifyCommand = async (command) => {
     return Promise.resolve(`Song not found 😭`);
   }
 
-  const current = /current/g.exec(command);
-  if (current) {
+  if (/^current/g.test(command)) {
     const currentSong = await spotifyApi
       .getMyCurrentPlayingTrack()
       .catch((error) => console.log(error));
@@ -122,9 +120,7 @@ const spotifyCommand = async (command) => {
       `Now playing: ${currentSong.body.item.name} - ${songs.body.tracks.item.artist} 🎵`
     );
   }
-
-  const help = /help/g.exec(command);
-  if (help) {
+  if (/^help/g.test(command)) {
     return Promise.resolve(
       `Commands:
         -   queue <song> - Queues a song
