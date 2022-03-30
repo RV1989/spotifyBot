@@ -28,7 +28,7 @@ const scopes = [
 ];
 
 const spotifyApi = new SpotifyWebApi({
-  redirectUri: `https://spotifyrvb.herokuapp.com/callback`,
+  redirectUri: `${process.env.URI}/callback`,
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
@@ -95,10 +95,10 @@ app.get("/callback", (req, res) => {
 
 const spotifyCommand = async (command) => {
   const {
-    groups: { songToAdd },
-  } = /queue(?<songToAdd>[^ $]*)/i.test(command);
-  if (songToAdd) {
-    songs = await spotifyApi.searchTracks(songToAdd);
+    groups: { song },
+  } = /queue (?<song>.*$)/g.exec(command);
+  if (song) {
+    let songs = await spotifyApi.searchTracks(song);
     if (songs) {
       await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
     }
