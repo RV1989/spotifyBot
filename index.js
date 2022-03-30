@@ -36,7 +36,9 @@ const spotifyApi = new SpotifyWebApi({
 app.use(express.json());
 
 app.post("/", async (req, res) => {
-  let status = await spotifyCommand(req.body.plainTextContent);
+  let status = await spotifyCommand(req.body.plainTextContent).catch((error) =>
+    console.log(error)
+  );
   res.send(status);
 });
 
@@ -100,25 +102,29 @@ const spotifyCommand = async (command) => {
     } = /queue (?<song>.*$)/g.exec(command);
     let songs = await spotifyApi
       .searchTracks(song)
-      .catch((error) => console.log(error));
+      .catch((error) => Promise.reject(error));
     if (songs) {
-      await spotifyApi
-        .addToQueue(songs.body.tracks.items[0].uri)
-        .catch((error) => console.log(error));
-      return Promise.resolve(
-        `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
-      );
+      try {
+        await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
+        return Promise.resolve(
+          `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
+        );
+      } catch (error) {
+        return Promise.reject(error);
+      }
     }
     return Promise.resolve(`Song not found 😭`);
   }
 
   if (/^current/g.test(command)) {
-    const currentSong = await spotifyApi
-      .getMyCurrentPlayingTrack()
-      .catch((error) => console.log(error));
-    return Promise.resolve(
-      `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
-    );
+    try {
+      const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
+      return Promise.resolve(
+        `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
+      );
+    } catch (error) {
+      return Promise.resolve(error);
+    }
   }
   if (/^help/g.test(command)) {
     return Promise.resolve(
