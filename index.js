@@ -28,16 +28,16 @@ const scopes = [
 ];
 
 const getCard = (action, title, artist, cover) => {
-  return `<table style="min-width:200px">
+  return `<table style="min-width:200px border:none;">
   <tr>
-    <th style="text-align:left" colspan="2" ><strong>${action}</strong></th>
+    <th style="text-align:left;border:none;" colspan="2" ><strong>${action}</strong></th>
  </tr>
  <tr>
- <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em"></td>
- <td style="margin-right: 35px;">
+ <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
+ <td style="margin-right: 35px;border:none;">
      <div>
-       <a style="font-size:1.2em "><strong>${title}</strong></a><br/>
-     <a style="font-size:0.9em">${artist}</a>
+       <span style="font-size:1.2em "><strong>${title}</strong></span><br/>
+     <span style="font-size:0.9em">${artist}</span>
      </div>
    </td>
    
