@@ -27,6 +27,25 @@ const scopes = [
   "user-follow-modify",
 ];
 
+const getCard = (action, title, artist, cover) => {
+  return `<table style="min-width:200px">
+  <tr>
+    <th style="text-align:left" colspan="2" ><strong>${action}</strong></th>
+ </tr>
+ <tr>
+ <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em"></td>
+ <td style="margin-right: 35px;">
+     <div>
+       <a style="font-size:1.2em "><strong>${title}</strong></a><br/>
+     <a style="font-size:0.9em">${artist}</a>
+     </div>
+   </td>
+   
+  </tr>
+
+</table>`;
+};
+
 const spotifyApi = new SpotifyWebApi({
   redirectUri: `${process.env.URI}/callback`,
   clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -126,9 +145,12 @@ const spotifyCommand = async (command) => {
     case "current":
       try {
         const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
-        return Promise.resolve(
-          `Now playing: ${currentSong.body.item.name} - ${currentSong.body.item.artists[0].name} 🎵`
-        );
+        const cover = currentSong.body.item.album.images[0].url;
+        const title = currentSong.body.item.name;
+        const artist = currentSong.body.item.artists
+          .map((artist) => artist.name)
+          .join("-");
+        return Promise.resolve(getCard("Now Playing", title, artist, cover));
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
@@ -153,10 +175,13 @@ const spotifyCommand = async (command) => {
         return Promise.reject(`Song not found 😭`);
       }
       try {
-        await spotifyApi.addToQueue(songs.body.tracks.items[0].uri);
-        return Promise.resolve(
-          `Added : ${songs.body.tracks.items[0].name} - ${songs.body.tracks.items[0].artists[0].name} 🎵`
-        );
+        const addedSong = songs.body.tracks.items[0];
+        await spotifyApi.addToQueue(addedSong.uri);
+        //const addedSong = await spotifyApi.getTracks(songs.body.items[0].trackIds)
+        const cover = addedSong.album.images[0]?.url;
+        const title = addedSong.name;
+        const artist = addedSong.artists.map((artist) => artist.name).join("-");
+        return Promise.resolve(getCard("Added", title, artist, cover));
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
