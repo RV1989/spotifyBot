@@ -1,4 +1,3 @@
-const ngrok = require("ngrok");
 const express = require("express");
 require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
