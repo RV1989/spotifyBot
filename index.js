@@ -207,7 +207,7 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
-        let score = random < 0.95 ? 100 : 1.0;
+        let score = random > 0.95 ? 100 : 1.0;
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
