@@ -67,8 +67,8 @@ app.post("/", async (req, res) => {
       leaderboard[_.startCase(_.camelCase(req.body.user))] = 0;
     }
     leaderboard[_.startCase(_.camelCase(req.body.user))] =
-      leaderboard[_.startCase(_.camelCase(req.body.user))] + 1 || 1;
-    res.send(result);
+      leaderboard[_.startCase(_.camelCase(req.body.user))] + result.score;
+    res.send(result.message);
   } catch (error) {
     res.send(error);
   }
@@ -119,12 +119,16 @@ app.get("/callback", (req, res) => {
       res.send("Success! You can now close the window.");
 
       setInterval(async () => {
-        const data = await spotifyApi.refreshAccessToken();
-        const access_token = data.body["access_token"];
+        if (spotifyApi.getAccessToken() === "") {
+          clearInterval(this);
+        } else {
+          const data = await spotifyApi.refreshAccessToken();
+          const access_token = data.body["access_token"];
 
-        console.log("The access token has been refreshed!");
-        console.log("access_token:", access_token);
-        spotifyApi.setAccessToken(access_token);
+          console.log("The access token has been refreshed!");
+          console.log("access_token:", access_token);
+          spotifyApi.setAccessToken(access_token);
+        }
       }, (expires_in / 2) * 1000);
     })
     .catch((error) => {
@@ -163,9 +167,10 @@ const spotifyCommand = async (command, user) => {
         const artist = currentSong.body.item.artists
           .map((artist) => artist.name)
           .join(",");
-        return Promise.resolve(
-          getCard("Now Playing", title, artist, cover, "")
-        );
+        return Promise.resolve({
+          message: getCard("Now Playing", title, artist, cover, ""),
+          score: 0.5,
+        });
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
@@ -196,7 +201,10 @@ const spotifyCommand = async (command, user) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
-        return Promise.resolve(getCard("Added", title, artist, cover, user));
+        return Promise.resolve({
+          message: getCard("Added", title, artist, cover, user),
+          score: 1,
+        });
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
@@ -208,7 +216,10 @@ const spotifyCommand = async (command, user) => {
     case "next":
       try {
         await spotifyApi.skipToNext();
-        return Promise.resolve("Skipped to next song 🎶");
+        return Promise.resolve({
+          message: "Skipped to next song 🎶",
+          score: -2,
+        });
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
       }
@@ -229,7 +240,7 @@ const spotifyCommand = async (command, user) => {
           .join("")}
         </ol>
         `;
-      return Promise.resolve(leaderboardHtml);
+      return Promise.resolve({ message: leaderboardHtml, score: 0 });
       break;
     default:
       return Promise.resolve(`command not Found "${command}" 🤬`);
