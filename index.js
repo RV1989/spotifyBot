@@ -64,10 +64,11 @@ app.post("/", async (req, res) => {
       _.startCase(_.camelCase(req.body.user))
     );
     if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
-      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0;
+      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0.0;
     }
     leaderboard[_.startCase(_.camelCase(req.body.user))] =
-      leaderboard[_.startCase(_.camelCase(req.body.user))] + result.score;
+      parseFloat(leaderboard[_.startCase(_.camelCase(req.body.user))]) +
+      parseFloat(result.score);
     res.send(result.message);
   } catch (error) {
     res.send(error);
@@ -155,7 +156,7 @@ const spotifyCommand = async (command, user) => {
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
     </ul>`,
-        score: 0,
+        score: 0.0,
       });
 
       break;
@@ -204,7 +205,7 @@ const spotifyCommand = async (command, user) => {
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user),
-          score: 1,
+          score: 1.0,
         });
       } catch (error) {
         return Promise.reject(
@@ -219,7 +220,7 @@ const spotifyCommand = async (command, user) => {
         await spotifyApi.skipToNext();
         return Promise.resolve({
           message: "Skipped to next song 🎶",
-          score: -2,
+          score: -2.0,
         });
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
@@ -237,7 +238,7 @@ const spotifyCommand = async (command, user) => {
       leaderboardHtml = `<h1>Leaderboard</h1>
         <ol>
         ${leaderboardArray
-          .map((x) => `<li>${x.name} - ${x.score}</li>`)
+          .map((x) => `<li>${x.name}\t${x.score}</li>`)
           .join("")}
         </ol>
         `;
