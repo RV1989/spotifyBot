@@ -56,6 +56,7 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
+    console.log(req.body);
     const result = await spotifyCommand(req.body.plainTextContent);
     res.send(result);
   } catch (error) {
