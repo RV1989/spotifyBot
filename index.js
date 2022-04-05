@@ -28,12 +28,12 @@ const scopes = [
   "user-follow-modify",
 ];
 
-const getCard = (action, title, artist, cover, user) => {
+const getCard = (action, title, artist, cover, user, score) => {
   return `<table style="min-width:200px border:none;">
   <tr>
     <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
     user ? "by " + user : ""
-  }</strong></th>
+  } ${score === 100 ? "🎉🎉🎉" : ""}</strong></th>
  </tr>
  <tr>
  <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
@@ -170,7 +170,7 @@ const spotifyCommand = async (command, user) => {
           .map((artist) => artist.name)
           .join(",");
         return Promise.resolve({
-          message: getCard("Now Playing", title, artist, cover, ""),
+          message: getCard("Now Playing", title, artist, cover, "", 0.5),
           score: 0.5,
         });
       } catch (error) {
@@ -207,9 +207,10 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
+        let score = random < 0.95 ? 100 : 1.0;
         return Promise.resolve({
-          message: getCard("Added", title, artist, cover, user),
-          score: random < 0.95 ? 100 : 1.0,
+          message: getCard("Added", title, artist, cover, user, score),
+          score: score,
         });
       } catch (error) {
         return Promise.reject(
