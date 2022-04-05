@@ -182,7 +182,10 @@ const spotifyCommand = async (command, user) => {
 
     case "queue":
       if (data.entities.groups.Song?.trim() === "") {
-        return Promise.reject(`No song title provided 🤬☠💣`);
+        return Promise.resolve({
+          message: `No song title provided 🤬☠💣`,
+          score: -12.0,
+        });
       }
       let songs = await spotifyApi
         .searchTracks(data.entities.groups.Song.trim())
