@@ -57,7 +57,6 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     const result = await spotifyCommand(req.body.plainTextContent);
     if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
       leaderboard[_.startCase(_.camelCase(req.body.user))] = 0;
@@ -209,7 +208,21 @@ const spotifyCommand = async (command) => {
       break;
 
     case "leaderboard":
-      return Promise.resolve(JSON.stringify(leaderboard));
+      const leaderboardArray = Object.keys(leaderboard)
+        .map((key) => {
+          return { name: key, score: leaderboard[key] };
+        })
+        .sort((a, b) => {
+          return a.score - b.score;
+        });
+      leaderboardHtml = `<h1>Leader board</h1>
+        <ol>
+        ${leaderboardArray
+          .map((x) => `<li>${x.name} - ${x.score}</li>`)
+          .join("")}
+        </ol>
+        `;
+      return Promise.resolve(leaderboardHtml);
       break;
     default:
       return Promise.resolve(`command not Found "${command}" 🤬`);

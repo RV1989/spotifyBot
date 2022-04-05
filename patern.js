@@ -17,7 +17,7 @@ var patternDict = [
   },
   {
     pattern: "^leaderboard",
-    intent: "next",
+    intent: "leaderboard",
   },
 ];
 
