@@ -3,8 +3,9 @@ require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
 const app = express();
 const port = process.env.PORT;
+const _ = require("lodash");
 const matcher = require("./matcher");
-
+const leaderboard = {};
 const scopes = [
   "ugc-image-upload",
   "user-read-playback-state",
@@ -58,6 +59,11 @@ app.post("/", async (req, res) => {
   try {
     console.log(req.body);
     const result = await spotifyCommand(req.body.plainTextContent);
+    if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
+      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0;
+    }
+    leaderboard[_.startCase(_.camelCase(req.body.user))] =
+      leaderboard[_.startCase(_.camelCase(req.body.user))] + 1 || 1;
     res.send(result);
   } catch (error) {
     res.send(error);
@@ -139,6 +145,7 @@ const spotifyCommand = async (command) => {
       <li>queue <song> - Queues a song</li>
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
+      <li>leaderboard - Shows the leaderboard</li>
     </ul>`
       );
 
@@ -199,6 +206,10 @@ const spotifyCommand = async (command) => {
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
       }
+      break;
+
+    case "leaderboard":
+      return Promise.resolve(JSON.stringify(leaderboard));
       break;
     default:
       return Promise.resolve(`command not Found "${command}" 🤬`);

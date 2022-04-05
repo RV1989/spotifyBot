@@ -15,6 +15,10 @@ var patternDict = [
     pattern: "^next",
     intent: "next",
   },
+  {
+    pattern: "^leaderboard",
+    intent: "next",
+  },
 ];
 
 module.exports = patternDict;
