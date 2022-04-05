@@ -242,10 +242,13 @@ const spotifyCommand = async (command, user) => {
           .join("")}
         </ol>
         `;
-      return Promise.resolve({ message: leaderboardHtml, score: 0 });
+      return Promise.resolve({ message: leaderboardHtml, score: 0.0 });
       break;
     default:
-      return Promise.resolve(`command not Found "${command}" 🤬`);
+      return Promise.resolve({
+        message: `command not Found "${command}" 🤬`,
+        score: -10.0,
+      });
       break;
   }
 };
