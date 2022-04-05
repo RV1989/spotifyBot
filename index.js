@@ -31,7 +31,9 @@ const scopes = [
 const getCard = (action, title, artist, cover, user) => {
   return `<table style="min-width:200px border:none;">
   <tr>
-    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} by ${user}</strong></th>
+    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
+    user ? "by " + user : ""
+  }</strong></th>
  </tr>
  <tr>
  <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
