@@ -222,6 +222,12 @@ const spotifyCommand = async (command, user) => {
 
     case "next":
       try {
+        if (leaderboard[user] < 10.0) {
+          return Promise.resolve({
+            message: `You need to have at least 10 points to skip a song 😭`,
+            score: -0.5,
+          });
+        }
         await spotifyApi.skipToNext();
         return Promise.resolve({
           message: "Skipped to next song 🎶",
