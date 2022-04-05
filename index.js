@@ -28,10 +28,10 @@ const scopes = [
   "user-follow-modify",
 ];
 
-const getCard = (action, title, artist, cover) => {
+const getCard = (action, title, artist, cover, user) => {
   return `<table style="min-width:200px border:none;">
   <tr>
-    <th style="text-align:left;border:none;" colspan="2" ><strong>${action}</strong></th>
+    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} by ${user}</strong></th>
  </tr>
  <tr>
  <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
@@ -57,7 +57,10 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
-    const result = await spotifyCommand(req.body.plainTextContent);
+    const result = await spotifyCommand(
+      req.body.plainTextContent,
+      _.startCase(_.camelCase(req.body.user))
+    );
     if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
       leaderboard[_.startCase(_.camelCase(req.body.user))] = 0;
     }
@@ -128,7 +131,7 @@ app.get("/callback", (req, res) => {
     });
 });
 
-const spotifyCommand = async (command) => {
+const spotifyCommand = async (command, user) => {
   console.log(`⚡\t${command}`);
 
   const data = await matcher(command);
@@ -158,7 +161,9 @@ const spotifyCommand = async (command) => {
         const artist = currentSong.body.item.artists
           .map((artist) => artist.name)
           .join(",");
-        return Promise.resolve(getCard("Now Playing", title, artist, cover));
+        return Promise.resolve(
+          getCard("Now Playing", title, artist, cover, "")
+        );
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
@@ -189,7 +194,7 @@ const spotifyCommand = async (command) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
-        return Promise.resolve(getCard("Added", title, artist, cover));
+        return Promise.resolve(getCard("Added", title, artist, cover, user));
       } catch (error) {
         return Promise.reject(
           `${error?.body?.error?.message ? error.body.error.message : error} 😭`
@@ -213,9 +218,9 @@ const spotifyCommand = async (command) => {
           return { name: key, score: leaderboard[key] };
         })
         .sort((a, b) => {
-          return a.score - b.score;
+          return b.score - a.score;
         });
-      leaderboardHtml = `<h1>Leader board</h1>
+      leaderboardHtml = `<h1>Leaderboard</h1>
         <ol>
         ${leaderboardArray
           .map((x) => `<li>${x.name} - ${x.score}</li>`)
