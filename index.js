@@ -143,8 +143,8 @@ const spotifyCommand = async (command, user) => {
   const data = await matcher(command);
   switch (data.intent) {
     case "help":
-      return Promise.resolve(
-        `
+      return Promise.resolve({
+        message: `
     <h1>Spotify Commands</h1>
     <a href="${process.env.URI}/login">Login</a><br/>
     <a href="${process.env.URI}/logout">Logout</a><br/>
@@ -154,8 +154,9 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
-    </ul>`
-      );
+    </ul>`,
+        score: 0,
+      });
 
       break;
 
