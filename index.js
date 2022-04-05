@@ -137,6 +137,7 @@ const spotifyCommand = async (command) => {
     <ul>
       <li>queue <song> - Queues a song</li>
       <li>current - Shows the current song playing</li>
+      <li>next - Skips to the next song</li>
     </ul>`
       );
 
@@ -149,7 +150,7 @@ const spotifyCommand = async (command) => {
         const title = currentSong.body.item.name;
         const artist = currentSong.body.item.artists
           .map((artist) => artist.name)
-          .join("-");
+          .join(",");
         return Promise.resolve(getCard("Now Playing", title, artist, cover));
       } catch (error) {
         return Promise.reject(
@@ -180,7 +181,7 @@ const spotifyCommand = async (command) => {
         //const addedSong = await spotifyApi.getTracks(songs.body.items[0].trackIds)
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
-        const artist = addedSong.artists.map((artist) => artist.name).join("-");
+        const artist = addedSong.artists.map((artist) => artist.name).join(",");
         return Promise.resolve(getCard("Added", title, artist, cover));
       } catch (error) {
         return Promise.reject(
@@ -188,6 +189,15 @@ const spotifyCommand = async (command) => {
         );
       }
 
+      break;
+
+    case "next":
+      try {
+        await spotifyApi.skipToNext();
+        return Promise.resolve("Skipped to next song 🎶");
+      } catch (error) {
+        return Promise.reject("Could not skip to next song 😭");
+      }
       break;
     default:
       return Promise.resolve(`command not Found "${command}" 🤬`);

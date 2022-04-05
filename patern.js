@@ -1,15 +1,19 @@
 var patternDict = [
   {
-    pattern: "help",
+    pattern: "^help",
     intent: "help",
   },
   {
-    pattern: "current",
+    pattern: "^current",
     intent: "current",
   },
   {
-    pattern: "queue\\b(?<Song>.+)",
+    pattern: "^queue\\b(?<Song>.+)",
     intent: "queue",
+  },
+  {
+    pattern: "^next",
+    intent: "next",
   },
 ];
 
