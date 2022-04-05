@@ -194,7 +194,7 @@ const spotifyCommand = async (command, user) => {
           )
         );
       if (songs.body.tracks.items.length === 0) {
-        return Promise.reject(`Song not found 😭`);
+        return Promise.resolve({ message: `Song not found 😭`, score: -0.5 });
       }
       try {
         const addedSong = songs.body.tracks.items[0];
