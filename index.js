@@ -6,6 +6,8 @@ const port = process.env.PORT;
 const _ = require("lodash");
 const matcher = require("./matcher");
 const leaderboard = {};
+var skips = [];
+const ONE_HOUR = 60 * 60 * 1000; /* ms */
 const scopes = [
   "ugc-image-upload",
   "user-read-playback-state",
@@ -207,7 +209,7 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
-        let score = random > 0.95 ? 100 : 1.0;
+        let score = random > 0.95 ? 25 : 1.0;
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
@@ -222,16 +224,23 @@ const spotifyCommand = async (command, user) => {
 
     case "next":
       try {
-        if (leaderboard[user] < 10.0) {
+        if (leaderboard[user] < 5.0) {
           return Promise.resolve({
-            message: `You need to have at least 10 points to skip a song 😭`,
+            message: `You need to have at least 5 points to skip a song 😭`,
             score: -0.5,
           });
         }
         await spotifyApi.skipToNext();
+        skips.push({ user: user, time: new Date() });
+        skips = skips.filter((skip) => {
+          let now = new Date();
+          let res = now - skip.time < ONE_HOUR;
+          return res;
+        });
+        let skipsOfUser = skips.filter((skip) => skip.user === user).length;
         return Promise.resolve({
           message: "Skipped to next song 🎶",
-          score: -2.0,
+          score: -2.0 * skipsOfUser,
         });
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
