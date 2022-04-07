@@ -35,7 +35,7 @@ const getCard = (action, title, artist, cover, user, score) => {
   <tr>
     <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
     user ? "by " + user : ""
-  } ${score === 25 ? "🎉🎉🎉" : ""}</strong></th>
+  } ${score === 75 ? "🎉🎉🎉" : ""}</strong></th>
  </tr>
  <tr>
  <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
@@ -209,7 +209,7 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
-        let score = random > 0.95 ? 25 : 1.0;
+        let score = random > 0.9866666 ? 75 : 1.0;
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
