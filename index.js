@@ -61,13 +61,13 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
+    if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
+      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0.0;
+    }
     const result = await spotifyCommand(
       req.body.plainTextContent,
       _.startCase(_.camelCase(req.body.user))
     );
-    if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
-      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0.0;
-    }
     leaderboard[_.startCase(_.camelCase(req.body.user))] =
       parseFloat(leaderboard[_.startCase(_.camelCase(req.body.user))]) +
       parseFloat(result.score);
