@@ -7,6 +7,7 @@ const _ = require("lodash");
 const matcher = require("./matcher");
 const leaderboard = {};
 var skips = [];
+var lastSongs = [];
 const ONE_HOUR = 60 * 60 * 1000; /* ms */
 const scopes = [
   "ugc-image-upload",
@@ -201,6 +202,16 @@ const spotifyCommand = async (command, user) => {
       if (songs.body.tracks.items.length === 0) {
         return Promise.resolve({ message: `Song not found 😭`, score: -0.5 });
       }
+      if (lastSongs.find((song) => song === songs.body.tracks.items[0].uri)) {
+        return Promise.resolve({
+          message: `Fuck you met je spam 🤬☠💣`,
+          score: -10.0,
+        });
+      }
+      lastSongs.push(songs.body.tracks.items[0].uri);
+      if (lastSongs.length > 10) {
+        lastSongs.shift();
+      }
       try {
         const addedSong = songs.body.tracks.items[0];
         await spotifyApi.addToQueue(addedSong.uri);
@@ -240,7 +251,7 @@ const spotifyCommand = async (command, user) => {
         let skipsOfUser = skips.filter((skip) => skip.user === user).length;
         return Promise.resolve({
           message: "Skipped to next song 🎶",
-          score: -2.0 * skipsOfUser,
+          score: -(2.0 ** skipsOfUser),
         });
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
