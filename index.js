@@ -205,7 +205,7 @@ const spotifyCommand = async (command, user) => {
       if (lastSongs.find((song) => song === songs.body.tracks.items[0].uri)) {
         return Promise.resolve({
           message: `Fuck you met je spam 🤬☠💣`,
-          score: -10.0,
+          score: -5.0,
         });
       }
       lastSongs.push(songs.body.tracks.items[0].uri);
@@ -220,7 +220,7 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
-        let score = random > 0.9866666 ? 75 : 1.0;
+        let score = random > 0.95 ? 10 : 1.0;
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
@@ -251,7 +251,7 @@ const spotifyCommand = async (command, user) => {
         let skipsOfUser = skips.filter((skip) => skip.user === user).length;
         return Promise.resolve({
           message: "Skipped to next song 🎶",
-          score: -(2.0 ** skipsOfUser),
+          score: -(5.0 * skipsOfUser),
         });
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
@@ -278,7 +278,7 @@ const spotifyCommand = async (command, user) => {
     default:
       return Promise.resolve({
         message: `command not Found "${command}" 🤬`,
-        score: -10.0,
+        score: -5.0,
       });
       break;
   }
