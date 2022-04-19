@@ -1,10 +1,34 @@
 const express = require("express");
+const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
 const app = express();
 const port = process.env.PORT;
 const _ = require("lodash");
 const matcher = require("./matcher");
+
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "./data/database.sqlite",
+});
+
+const User = sequelize.define("User", {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  name: DataTypes.STRING,
+  score: DataTypes.INTEGER,
+});
+
+const Song = sequelize.define("Song", {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  title: DataTypes.STRING,
+  artist: DataTypes.STRING,
+  cover: DataTypes.STRING,
+  url: DataTypes.STRING,
+});
+
+User.hasMany(Song, { as: "Songs" });
+Song.belongsTo(User);
+
 const leaderboard = {};
 var skips = [];
 var lastSongs = [];
@@ -62,16 +86,17 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
-    if (leaderboard[_.startCase(_.camelCase(req.body.user))] === undefined) {
-      leaderboard[_.startCase(_.camelCase(req.body.user))] = 0.0;
-    }
-    const result = await spotifyCommand(
-      req.body.plainTextContent,
-      _.startCase(_.camelCase(req.body.user))
+    const currentUser = await User.findOne(
+      (where = { name: _.startCase(_.camelCase(req.body.user)) })
     );
-    leaderboard[_.startCase(_.camelCase(req.body.user))] =
-      parseFloat(leaderboard[_.startCase(_.camelCase(req.body.user))]) +
-      parseFloat(result.score);
+    if (!currentUser) {
+      currentUser = await User.create({
+        name: _.startCase(_.camelCase(req.body.user)),
+        score: 0,
+      });
+    }
+    const result = await spotifyCommand(req.body.plainTextContent, currentUser);
+
     res.send(result.message);
   } catch (error) {
     res.send(error);
@@ -219,10 +244,19 @@ const spotifyCommand = async (command, user) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
+        Song.create({
+          title: title,
+          artist: artist,
+          cover: cover,
+          url: addedSong.uri,
+          UserId: user.id,
+        });
         let random = Math.random();
-        let score = random > 0.95 ? 10 : 1.0;
+        let score = random > 0.95 ? 10 : 2;
+        user.score = user.score + score;
+        await user.save();
         return Promise.resolve({
-          message: getCard("Added", title, artist, cover, user, score),
+          message: getCard("Added", title, artist, cover, user.name, score),
           score: score,
         });
       } catch (error) {
@@ -235,10 +269,10 @@ const spotifyCommand = async (command, user) => {
 
     case "next":
       try {
-        if (leaderboard[user] < 5.0) {
+        if (user.score < 5) {
           return Promise.resolve({
             message: `You need to have at least 5 points to skip a song 😭`,
-            score: -0.5,
+            score: -1,
           });
         }
         await spotifyApi.skipToNext();
