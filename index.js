@@ -208,7 +208,7 @@ const spotifyCommand = async (command, user) => {
           score: -5.0,
         });
       }
-      lastSongs.push(songs.body.tracks.items[0].uri);
+      
       if (lastSongs.length > 10) {
         lastSongs.shift();
       }
@@ -216,6 +216,7 @@ const spotifyCommand = async (command, user) => {
         const addedSong = songs.body.tracks.items[0];
         await spotifyApi.addToQueue(addedSong.uri);
         //const addedSong = await spotifyApi.getTracks(songs.body.items[0].trackIds)
+        lastSongs.push(songs.body.tracks.items[0].uri);
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
