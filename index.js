@@ -208,7 +208,7 @@ const spotifyCommand = async (command, user) => {
           score: -5.0,
         });
       }
-      
+
       if (lastSongs.length > 10) {
         lastSongs.shift();
       }
@@ -222,11 +222,14 @@ const spotifyCommand = async (command, user) => {
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
         let score = random > 0.95 ? 10 : 1.0;
-        if (user = 'Sander Deschrevel') {
-        score = random > 0.5 ? 20 : 1.0;}
-        if (user = 'Jasper Opsomer') {
-          score = random > 0.95 ? -10 : 1.0;}
-        
+        if (user === "DESCHREVEL, Sander") {
+          score = random > 0.5 ? 20 : 1.0;
+        }
+        if (user === "OPSOMER, Jasper") {
+          score = random > 0.95 ? -10 : 1.0;
+          user = "🎇🎇🎇OPSOMEISTER 🎇🎇🎇";
+        }
+
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
