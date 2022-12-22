@@ -142,7 +142,7 @@ app.get("/callback", (req, res) => {
 });
 
 const spotifyCommand = async (command, user) => {
-  console.log(`⚡\t${command}`);
+  console.log(`⚡\t${command} \tby: ${user}`);
 
   const data = await matcher(command);
   switch (data.intent) {
