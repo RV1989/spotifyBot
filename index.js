@@ -222,10 +222,10 @@ const spotifyCommand = async (command, user) => {
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let random = Math.random();
         let score = random > 0.95 ? 10 : 1.0;
-        if (user === "DESCHREVEL, Sander") {
+        if (user === "Deschrevel Sander") {
           score = random > 0.5 ? 20 : 1.0;
         }
-        if (user === "OPSOMER, Jasper") {
+        if (user === "Opsomer Jasper") {
           score = random > 0.95 ? -10 : 1.0;
           user = "🎇🎇🎇OPSOMEISTER 🎇🎇🎇";
         }
