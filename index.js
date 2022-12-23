@@ -36,7 +36,7 @@ const getCard = (action, title, artist, cover, user, score) => {
   <tr>
     <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
     user ? "by " + user : ""
-  } ${score === 10 || -10 ? "🎉🎉🎉" : ""}</strong></th>
+  } ${score === 10 || score === -10 ? "🎉🎉🎉" : ""}</strong></th>
  </tr>
  <tr>
  <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
