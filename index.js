@@ -158,6 +158,7 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
+      <li>ps. Jasper stinkt naar kak
     </ul>`,
         score: 0.0,
       });
@@ -227,7 +228,7 @@ const spotifyCommand = async (command, user) => {
         }
         if (user === "Opsomer Jasper") {
           score = random > 0.95 ? -10 : 1.0;
-          user = "🎇🎇🎇OPSOMEISTER 🎇🎇🎇";
+          user = "🎇🎇🖕OPSOMEISTER 🖕🎇🎇";
         }
 
         return Promise.resolve({
