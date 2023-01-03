@@ -52,7 +52,8 @@ const getCard = (action, title, artist, cover, user, score) => {
 };
 
 const getSuffix = (user, score) => {
-  let suffix = ["🤘", "👀", "🎉", "👉🏼", "🐔"].sort(() => Math.random() - Math.random()).slice(0, n);
+  const suffixs = ["🤘", "👀", "🎉", "👉🏼", "🐔"]
+  let suffix = suffixs[Math.floor(Math.random()*items.length)]
   if (user === "Deschrevel Sander") {
     suffix = "🍆";
   }
