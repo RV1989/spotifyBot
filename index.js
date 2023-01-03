@@ -34,26 +34,36 @@ const scopes = [
 const getCard = (action, title, artist, cover, user, score) => {
   return `<table style="min-width:200px border:none;">
   <tr>
-    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
-    user ? "by " + user : ""
-  } ${score === 10 || score === -10 ? "🎉🎉🎉" : ""}</strong></th>
- </tr>
- <tr>
- <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
- <td style="margin-right: 35px;border:none;">
-     <div>
-       <span style="font-size:1.2em "><strong>${title}</strong></span><br/>
-     <span style="font-size:0.9em">${artist}</span>
-     </div>
-   </td>
-   
+    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${user ? "by " + user : ""
+    } ${getSuffix(user, score)}</strong></th >
+ </tr >
+  <tr>
+    <td width="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
+    <td style="margin-right: 35px;border:none;">
+      <div>
+        <span style="font-size:1.2em "><strong>${title}</strong></span><br />
+        <span style="font-size:0.9em">${artist}</span>
+      </div>
+    </td>
+
   </tr>
 
-</table>`;
+</table > `;
 };
 
+const getSuffix = (user, score) => {
+  let suffix = ["🤘", "👀", "🎉", "👉🏼", "🐔"].random();
+  if (user === "Deschrevel Sander") {
+    suffix = "🍆";
+  }
+  for (let i = 1; i < score; i++) {
+    suffix += suffix;
+  };
+};
+
+
 const spotifyApi = new SpotifyWebApi({
-  redirectUri: `${process.env.URI}/callback`,
+  redirectUri: `${process.env.URI} /callback`,
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
@@ -158,7 +168,7 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
-      <li>ps. Jasper stinkt naar kak
+      <li>ps. Sander doet kaka in zijn broek
     </ul>`,
         score: 0.0,
       });
@@ -195,8 +205,7 @@ const spotifyCommand = async (command, user) => {
         .searchTracks(data.entities.groups.Song.trim())
         .catch((error) =>
           Promise.reject(
-            `${
-              error?.body?.error?.message ? error.body.error.message : error
+            `${error?.body?.error?.message ? error.body.error.message : error
             } 😭`
           )
         );
@@ -221,14 +230,9 @@ const spotifyCommand = async (command, user) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
-        let random = Math.random();
-        let score = random > 0.95 ? 10 : 1.0;
-        if (user === "Deschrevel Sander") {
-          score = random > 0.75 ? 10 : 1.0;
-        }
+        let score = Math.floor(Math.random() * 10) + 1;
         if (user === "Opsomer Jasper") {
-          score = random > 0.95 ? -10 : 1.0;
-          user = "🎇🎇🖕OPSOMEISTER 🖕🎇🎇";
+          user = "🎇OPSOMEISTER 🎇";
         }
 
         return Promise.resolve({
