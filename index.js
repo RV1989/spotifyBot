@@ -55,15 +55,16 @@ const getSuffix = (user, score) => {
   const suffixs = ["🤘", "👀", "🎉", "👉🏼", "🐔"]
   let randomSuf=Math.floor(Math.random()*suffixs.length)
   let suffix = suffixs[randomSuf]
+  let result
   console.log(`suffix gekozen nr ${randomSuf} ${suffix}`)
   if (user === "Deschrevel Sander") {
     suffix = "🍆";
   }
   for (let i = 1; i < score; i++) {
-    suffix += suffix;
+    result += suffix;
   };
 
-  return suffix
+  return result
 };
 
 
@@ -288,7 +289,7 @@ const spotifyCommand = async (command, user) => {
       leaderboardHtml = `<h1>Leaderboard</h1>
         <ol>
         ${leaderboardArray
-          .map((x) => `<li>${x.name}\t${x.score}</li>`)
+          .map((x) => `<li>${x.name}\t${x.score} ${getSuffix(x.name, 1)}</li>`)
           .join("")}
         </ol>
         `;
