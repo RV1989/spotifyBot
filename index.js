@@ -159,7 +159,7 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
-      <li>ps. Sander doet kaka in zijn broek
+      <li>ps. Jasper doet kaka in zijn broek
     </ul>`,
         score: 0.0,
       });
@@ -224,7 +224,7 @@ const spotifyCommand = async (command, user) => {
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let score = Math.floor(Math.random() * 5) + 1;
         if (user === "Opsomer Jasper") {
-          user = "🎇OPSOMEISTER 🎇";
+          user = "🎇💩 OPSOMEISTER 💩🎇";
         }
 
         if (title === "Sander Doet Kaka In Zijn Broek"){
