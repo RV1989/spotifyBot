@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
+const getSuffix = require("./jasper");
 const app = express();
 const port = process.env.PORT;
 const _ = require("lodash");
@@ -34,8 +35,9 @@ const scopes = [
 const getCard = (action, title, artist, cover, user, score) => {
   return `<table style="min-width:200px border:none;">
   <tr>
-    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${user ? "by " + user : ""
-    } ${getSuffix(user, score)}</strong></th >
+    <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
+    user ? "by " + user : ""
+  } ${getSuffix(user, score)}</strong></th >
  </tr >
   <tr>
     <td width="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
@@ -50,23 +52,6 @@ const getCard = (action, title, artist, cover, user, score) => {
 
 </table > `;
 };
-
-const getSuffix = (user, score) => {
-  const suffixs = ["🤘", "👀", "🎉", "👉🏼", "🐔"]
-  let randomSuf=Math.floor(Math.random()*suffixs.length)
-  let suffix = suffixs[randomSuf]
-  let result
-  console.log(`suffix gekozen nr ${randomSuf} ${suffix}`)
-  if (user === "Deschrevel Sander") {
-    suffix = "🍆";
-  }
-  for (let i = 1; i < score; i++) {
-    result += suffix;
-  };
-
-  return result
-};
-
 
 const spotifyApi = new SpotifyWebApi({
   redirectUri: `${process.env.URI}/callback`,
@@ -211,7 +196,8 @@ const spotifyCommand = async (command, user) => {
         .searchTracks(data.entities.groups.Song.trim())
         .catch((error) =>
           Promise.reject(
-            `${error?.body?.error?.message ? error.body.error.message : error
+            `${
+              error?.body?.error?.message ? error.body.error.message : error
             } 😭`
           )
         );
