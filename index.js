@@ -222,7 +222,7 @@ const spotifyCommand = async (command, user) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
-        let score = Math.floor(Math.random() * 10) + 1;
+        let score = Math.floor(Math.random() * 5) + 1;
         if (user === "Opsomer Jasper") {
           user = "🎇OPSOMEISTER 🎇";
         }
