@@ -5,7 +5,7 @@ const getSuffix = (user, score) => {
   let result = "";
   console.log(`suffix gekozen nr ${randomSuf} ${suffix}`);
   if (user === "Deschrevel Sander") {
-    suffix = "🍆";
+    suffix = "👑";
   }
   for (let i = 0; i < score; i++) {
     result += suffix;
