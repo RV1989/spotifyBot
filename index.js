@@ -231,6 +231,12 @@ const spotifyCommand = async (command, user) => {
           user = "🎇🎇🖕OPSOMEISTER 🖕🎇🎇";
         }
 
+        if (title === "Sander Doet Kaka In Zijn Broek"){
+          score = -10;
+          user = user, "Kust mijn kloten met je kutmuziek"; }
+ 
+   
+
         return Promise.resolve({
           message: getCard("Added", title, artist, cover, user, score),
           score: score,
