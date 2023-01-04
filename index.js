@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
+const getSuffix = require("./jasper");
 const app = express();
 const port = process.env.PORT;
 const _ = require("lodash");
@@ -36,20 +37,20 @@ const getCard = (action, title, artist, cover, user, score) => {
   <tr>
     <th style="text-align:left;border:none;" colspan="2" ><strong>${action} ${
     user ? "by " + user : ""
-  } ${score === 10 || score === -10 ? "🎉🎉🎉" : ""}</strong></th>
- </tr>
- <tr>
- <td width ="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
- <td style="margin-right: 35px;border:none;">
-     <div>
-       <span style="font-size:1.2em "><strong>${title}</strong></span><br/>
-     <span style="font-size:0.9em">${artist}</span>
-     </div>
-   </td>
-   
+  } ${getSuffix(user, score)}</strong></th >
+ </tr >
+  <tr>
+    <td width="56"><img src="${cover}" alt="cover img" width="56" height="56" style="margin-right: 1em;border:none;"></td>
+    <td style="margin-right: 35px;border:none;">
+      <div>
+        <span style="font-size:1.2em "><strong>${title}</strong></span><br />
+        <span style="font-size:0.9em">${artist}</span>
+      </div>
+    </td>
+
   </tr>
 
-</table>`;
+</table > `;
 };
 
 const spotifyApi = new SpotifyWebApi({
@@ -158,7 +159,7 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
-      <li>ps. Jasper stinkt naar kak
+      <li>ps. Sander doet kaka in zijn broek
     </ul>`,
         score: 0.0,
       });
@@ -221,14 +222,9 @@ const spotifyCommand = async (command, user) => {
         const cover = addedSong.album.images[0]?.url;
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
-        let random = Math.random();
-        let score = random > 0.95 ? 10 : 1.0;
-        if (user === "Deschrevel Sander") {
-          score = random > 0.75 ? 10 : 1.0;
-        }
+        let score = Math.floor(Math.random() * 5) + 1;
         if (user === "Opsomer Jasper") {
-          score = random > 0.95 ? -10 : 1.0;
-          user = "🎇🎇🖕OPSOMEISTER 🖕🎇🎇";
+          user = "🎇OPSOMEISTER 🎇";
         }
 
         if (title === "Sander Doet Kaka In Zijn Broek"){
@@ -285,7 +281,7 @@ const spotifyCommand = async (command, user) => {
       leaderboardHtml = `<h1>Leaderboard</h1>
         <ol>
         ${leaderboardArray
-          .map((x) => `<li>${x.name}\t${x.score}</li>`)
+          .map((x) => `<li>${x.name}\t${x.score} ${getSuffix(x.name, 1)}</li>`)
           .join("")}
         </ol>
         `;
