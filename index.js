@@ -227,9 +227,11 @@ const spotifyCommand = async (command, user) => {
           user = "🎇💩 OPSOMEISTER 💩🎇";
         }
 
-        if (title === "Sander Doet Kaka In Zijn Broek"){
+        let containsKakaInBroek = title.search("Kaka In Zijn Broek")
+
+        if (containsKakaInBroek != -1 ){
           score = -10;
-          user = user, "Kust mijn kloten met je kutmuziek"; }
+          user = user + "Kust mijn kloten met je kutmuziek"; }
  
    
 
