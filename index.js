@@ -261,10 +261,12 @@ const spotifyCommand = async (command, user) => {
       let KakaInBroekPlaying = title.search("Kaka In Zijn Broek") != -1
 
       if (KakaInBroekPlaying) { return Promise.resolve({
-        message: `Kakmuziek cannot be skipped 💩💩💩`})}
-
-      if ( ! KakaInBroekPlaying) {
-
+        message: "Kakmuziek cannot be skipped 💩💩💩",
+        score: -5.0,
+      })}
+      
+        
+    
       try {
         if (leaderboard[user] < 5.0) {
           return Promise.resolve({
@@ -288,7 +290,7 @@ const spotifyCommand = async (command, user) => {
         return Promise.reject("Could not skip to next song 😭");
       }
 
-    }
+    
       break;
     
     case "leaderboard":
