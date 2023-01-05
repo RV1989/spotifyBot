@@ -231,7 +231,7 @@ const spotifyCommand = async (command, user) => {
 
         if (containsKakaInBroek != -1 ){
           score = -10;
-          user = user + "Kust mijn kloten met je kutmuziek"; }
+          user = user + "Kust mijn kloten met je kakmuziek 💩💩💩"; }
  
    
 
@@ -247,7 +247,20 @@ const spotifyCommand = async (command, user) => {
 
       break;
 
+      
+     
+
+     
     case "next":
+
+    //Make kakmuziek unskippable
+      let KakaInBroekPlaying = currentSong.search("Kaka In Zijn Broek") != -1
+
+      if (KakaInBroekPlaying) { return Promise.resolve({
+        message: `Kakmuziek cannot be skipped 💩💩💩`})}
+
+      if ( ! KakaInBroekPlaying) {
+
       try {
         if (leaderboard[user] < 5.0) {
           return Promise.resolve({
@@ -270,8 +283,10 @@ const spotifyCommand = async (command, user) => {
       } catch (error) {
         return Promise.reject("Could not skip to next song 😭");
       }
-      break;
 
+    }
+      break;
+    
     case "leaderboard":
       const leaderboardArray = Object.keys(leaderboard)
         .map((key) => {
