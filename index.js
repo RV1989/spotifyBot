@@ -254,7 +254,11 @@ const spotifyCommand = async (command, user) => {
     case "next":
 
     //Make kakmuziek unskippable
-      let KakaInBroekPlaying = currentSong.search("Kaka In Zijn Broek") != -1
+    
+    const currentSong = await spotifyApi.getMyCurrentPlayingTrack();
+    const title = currentSong.body.item.name;
+
+      let KakaInBroekPlaying = title.search("Kaka In Zijn Broek") != -1
 
       if (KakaInBroekPlaying) { return Promise.resolve({
         message: `Kakmuziek cannot be skipped 💩💩💩`})}
