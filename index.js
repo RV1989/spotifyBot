@@ -261,7 +261,7 @@ const spotifyCommand = async (command, user) => {
       let KakaInBroekPlaying = title.search("Kaka In Zijn Broek") != -1
 
       if (KakaInBroekPlaying) { return Promise.resolve({
-        message: "Kakmuziek cannot be skipped 💩💩💩",
+        message: "Kakmuziek cannot be skipped 💩💩💩💩💩",
         score: -5.0,
       })}
       
