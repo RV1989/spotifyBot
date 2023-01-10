@@ -231,7 +231,7 @@ const spotifyCommand = async (command, user) => {
           score = -10;
           if (math.random > 0.99) {
             score = -leaderboard[user]
-            user = user + "Karma is a bitch 💩💩💩"
+            user = user + " Karma is a bitch 💩💩💩"
           } else {
           user = user + " Kust mijn kloten met je kakmuziek 💩💩💩"; 
           }}
