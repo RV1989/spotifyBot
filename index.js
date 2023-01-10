@@ -230,10 +230,11 @@ const spotifyCommand = async (command, user) => {
         if (containsKakaInBroek != -1 ){
           score = -10;
           if (math.random > 0.99) {
-            score: -leaderboard[user]
-          }
+            score = -leaderboard[user]
+            user = user + "Karma is a bitch 💩💩💩"
+          } else {
           user = user + " Kust mijn kloten met je kakmuziek 💩💩💩"; 
-          }
+          }}
           
           if (user === "Opsomer Jasper") {
             user = "🎇💩 OPSOMEISTER 💩🎇";
