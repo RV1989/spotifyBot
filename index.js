@@ -223,16 +223,22 @@ const spotifyCommand = async (command, user) => {
         const title = addedSong.name;
         const artist = addedSong.artists.map((artist) => artist.name).join(",");
         let score = Math.floor(Math.random() * 5) + 1;
-        if (user === "Opsomer Jasper") {
-          user = "🎇💩 OPSOMEISTER 💩🎇";
-        }
+        
 
         let containsKakaInBroek = title.search("Kaka In Zijn Broek")
 
         if (containsKakaInBroek != -1 ){
           score = -10;
-          user = user + "Kust mijn kloten met je kakmuziek 💩💩💩"; }
- 
+          if (math.random > 0.99) {
+            score = -leaderboard[user]
+            user = `${user} Karma is a bitch 💩💩💩`
+          } else {
+          user = `${user} Kust mijn kloten met je kakmuziek 💩💩💩`; 
+          }}
+          
+          if (user === "Opsomer Jasper") {
+            user = "🎇💩 OPSOMEISTER 💩🎇";
+          }
    
 
         return Promise.resolve({
