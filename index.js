@@ -159,7 +159,7 @@ const spotifyCommand = async (command, user) => {
       <li>current - Shows the current song playing</li>
       <li>next - Skips to the next song</li>
       <li>leaderboard - Shows the leaderboard</li>
-      <li>ps. Jasper doet kaka in zijn broek
+      <li>ps. Sander doet pipi in zijn potje
     </ul>`,
         score: 0.0,
       });
